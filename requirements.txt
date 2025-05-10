@@ -1,4 +1,5 @@
 beautifulsoup4
 EbookLib
-requests
+html5lib
 lxml
+requests
