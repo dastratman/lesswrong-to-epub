@@ -227,16 +227,17 @@ def get_urls_from_sequence(sequence_url):
 
 
 def get_urls_from_bestof(year="all", category="all"):
-    params = {}
-    if year and year.lower() != "all":
-        params['year'] = year
-    if category and category.lower() != "all":
-        params['category'] = category.lower()
+    """
+    Fetches posts from the 'Best of LessWrong' page with optional filtering by year and category.
+    Always explicitly sets year=all and category=all in the URL instead of omitting them.
+    """
+    params = {
+        'year': year.lower(),
+        'category': category.lower() if category.lower() != "all" else "all"
+    }
 
     query_string = urlencode(params)
-    bestof_url = f"{BASE_URL}/bestoflesswrong"
-    if query_string:
-        bestof_url += f"?{query_string}"
+    bestof_url = f"{BASE_URL}/bestoflesswrong?{query_string}"
 
     print(f"Fetching Best Of LessWrong: {bestof_url}")
     soup = make_soup(bestof_url)
@@ -251,12 +252,10 @@ def get_urls_from_bestof(year="all", category="all"):
         href = link_tag.get('href')
         if href:
             full_url = urljoin(BASE_URL, href)
-            if ('/posts/' in full_url and '/p/' not in full_url.split('/posts/')[-1]) or \
-               ('/s/' in full_url and '/p/' in full_url):
+            if ('/p/' in full_url and ('/s/' in full_url or '/posts/' in full_url)) or \
+               ('/posts/' in full_url and not any(x in full_url.split('/posts/')[-1] for x in ['#', '?'])):
                 if full_url not in post_urls:
                     post_urls.append(full_url)
-            # else:
-            #     print(f"Skipping non-post link from BestOf: {full_url}")
 
     if not post_urls:
         print(f"No post URLs found on Best Of page: {bestof_url}")
