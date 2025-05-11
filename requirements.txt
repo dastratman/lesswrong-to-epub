@@ -2,4 +2,5 @@ beautifulsoup4
 EbookLib
 html5lib
 lxml
+pillow
 requests

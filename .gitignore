@@ -173,5 +173,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Downloaded images
+# Cached data
 epub_images/
+lw_cache
